@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus & Fuel Plan</title>
+    <style>
+        /* Google Font for a modern look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        /* CSS Variables for easy theme changes */
+        :root {
+            --bg-color: #f4f7f9;
+            --card-color: #ffffff;
+            --text-color: #3d4a5c;
+            --heading-color: #2c3e50;
+            --accent-color-1: #3498db; /* Breakfast */
+            --accent-color-2: #f39c12; /* Lunch */
+            --accent-color-3: #8e44ad; /* Dinner */
+            --accent-color-4: #27ae60; /* Reminders */
+            --shadow-color: rgba(60, 64, 67, 0.15);
+            --border-color: #e8eef2;
+        }
+
+        /* Base styles for the entire page */
+        html {
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 1.5rem; /* Use rem for responsive padding */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        /* Main container for all content */
+        .main-container {
+            width: 100%;
+            max-width: 1000px; /* Max width for large desktops */
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        h1 {
+            color: var(--heading-color);
+            font-weight: 700;
+            font-size: clamp(1.75rem, 5vw, 2.5rem); /* Fluid font size */
+            margin: 0;
+        }
+
+        /* Grid layout for the meal cards */
+        .meal-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Default to 1 column for mobile */
+            gap: 1.5rem;
+        }
+
+        .meal-card {
+            background-color: var(--card-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .meal-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .meal-card h2 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.75rem;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Color coding for meal types */
+        .meal-card h2.breakfast { color: var(--accent-color-1); }
+        .meal-card h2.lunch { color: var(--accent-color-2); }
+        .meal-card h2.dinner { color: var(--accent-color-3); }
+        .meal-card h2.extras { color: var(--accent-color-4); }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .ingredient-button {
+            display: inline-block;
+            background-color: var(--border-color);
+            color: var(--heading-color);
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 1em;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .ingredient-button:hover {
+            transform: scale(1.05);
+            background-color: #d6dde2;
+        }
+
+        /* Modal (Pop-up) Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background-color: var(--card-color);
+            margin: auto;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 95%;
+            max-width: 500px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.25);
+            animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            from {transform: translateY(-50px); opacity: 0;}
+            to {transform: translateY(0); opacity: 1;}
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #aaa;
+            font-size: 2rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--heading-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal h3 {
+            color: var(--accent-color-1);
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+
+        .modal p {
+            margin: 1rem 0;
+            line-height: 1.6;
+            font-size: 1.05em;
+        }
+        
+        .modal p strong {
+            display: inline-block;
+            width: 100px;
+            color: var(--heading-color);
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2.5rem;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+
+        /* ----------------------------------- */
+        /* --- RESPONSIVE DESIGN BREAKPOINT --- */
+        /* ----------------------------------- */
+
+        /* For tablets and desktops (screens wider than 768px) */
+        @media (min-width: 768px) {
+            .meal-grid {
+                grid-template-columns: repeat(2, 1fr); /* Switch to a 2-column grid */
+            }
+            
+            /* Make the reminder card span both columns */
+            .meal-card.full-width {
+                grid-column: 1 / -1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="main-container">
+        <header>
+            <h1>✨ Focus & Fuel Plan ✨</h1>
+        </header>
+
+        <div class="meal-grid">
+            <!-- Breakfast -->
+            <div class="meal-card">
+                <h2 class="breakfast">🍳 Breakfast (8-9 AM)</h2>
+                <div class="button-container">
+                    <button class="ingredient-button" onclick="showModal('eggs')">Eggs</button>
+                    <button class="ingredient-button" onclick="showModal('daliaBreakfast')">Dalia</button>
+                    <button class="ingredient-button" onclick="showModal('nuts')">Nuts</button>
+                </div>
+            </div>
+
+            <!-- Lunch -->
+            <div class="meal-card">
+                <h2 class="lunch">☀️ Lunch (1-2 PM)</h2>
+                <div class="button-container">
+                    <button class="ingredient-button" onclick="showModal('chicken')">Chicken</button>
+                    <button class="ingredient-button" onclick="showModal('chickpeas')">Chickpeas</button>
+                    <button class="ingredient-button" onclick="showModal('salad')">Salad</button>
+                </div>
+            </div>
+
+            <!-- Dinner -->
+            <div class="meal-card">
+                <h2 class="dinner">🌙 Dinner (7-8 PM)</h2>
+                <div class="button-container">
+                    <button class="ingredient-button" onclick="showModal('lentils')">Lentils (Daal)</button>
+                    <button class="ingredient-button" onclick="showModal('daliaDinner')">Dalia</button>
+                    <button class="ingredient-button" onclick="showModal('yogurt')">Yogurt</button>
+                </div>
+            </div>
+            
+            <!-- Extras -->
+            <div class="meal-card full-width">
+                <h2 class="extras">⭐ Important Reminders</h2>
+                <p>💧 Drink 8-10 glasses of water daily.</p>
+                <p>🥄 Use minimal oil (max 1 tbsp/day). A healthy tarka is your friend!</p>
+                <p>💪 Consistency is your real superpower!</p>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Your personal diet companion.</p>
+        </footer>
+    </main>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title">Ingredient Details</h3>
+            <p><strong>Weight:</strong> <span id="modal-weight"></span></p>
+            <p><strong>State:</strong> <span id="modal-state"></span></p>
+            <p><strong>Cooking:</strong> <span id="modal-cooking"></span></p>
+            <p><strong>Buy Weekly:</strong> <span id="modal-shopping"></span></p>
+        </div>
+    </div>
+
+    <script>
+        const details = {
+            eggs: {
+                title: "🍳 Eggs",
+                weight: "150g (approx. 3 large eggs)",
+                state: "Boiled or Scrambled",
+                cooking: "<b>Boiled:</b> Place in water, boil for 8-10 mins. <br><b>Scrambled:</b> Whisk and cook on a non-stick pan with minimal oil.",
+                shopping: "2 dozen"
+            },
+            daliaBreakfast: {
+                title: "🥣 Dalia (Breakfast)",
+                weight: "80g (dry weight)",
+                state: "Cooked into a porridge",
+                cooking: "Combine 1 part Dalia with 3 parts water & a pinch of salt. Boil, then simmer for 5-7 mins until soft.",
+                shopping: "Buy a 1.2 kg pack for the week."
+            },
+            nuts: {
+                title: "🥜 Nuts (Almonds/Walnuts)",
+                weight: "30g",
+                state: "Raw",
+                cooking: "None required. Eat as they are.",
+                shopping: "~250g pack"
+            },
+            chicken: {
+                title: "🍗 Chicken Breast",
+                weight: "150g (raw weight)",
+                state: "Grilled or Baked",
+                cooking: "Marinate with spices. Grill on a pan or bake at 200°C (400°F) for 20-25 mins until cooked through.",
+                shopping: "1.05 kg"
+            },
+            chickpeas: {
+                title: "🍲 Chickpeas (Chanay)",
+                weight: "50g (dry weight)",
+                state: "Boiled (Tarka optional)",
+                cooking: "Soak overnight. Pressure cook until soft. For a <b>healthy tarka:</b> Heat ½ tsp oil, sizzle cumin seeds & 1 chopped garlic, pour over your single serving.",
+                shopping: "~500g pack"
+            },
+            salad: {
+                title: "🥗 Simple Salad",
+                weight: "~300g total",
+                state: "Raw",
+                cooking: "Chop 1 medium cucumber, 1 medium tomato, and ½ an onion. Mix with a squeeze of lemon.",
+                shopping: "1kg each of Cucumber & Tomato, 0.5kg Onion"
+            },
+            lentils: {
+                title: "🥣 Lentils (Daal)",
+                weight: "100g (dry weight)",
+                state: "Cooked into a soup",
+                cooking: "Rinse daal. Combine with water, salt, turmeric, and chili powder. Boil then simmer for 20-25 mins until mushy.",
+                shopping: "700g (buy a 1kg pack)"
+            },
+            daliaDinner: {
+                title: "🥣 Dalia (Dinner)",
+                weight: "80g (dry weight)",
+                state: "Cooked into a porridge",
+                cooking: "Combine 1 part Dalia with 3 parts water & a pinch of salt. Boil, then simmer for 5-7 mins until soft. Pour hot daal over it.",
+                shopping: "Buy a 1.2 kg pack for the week."
+            },
+            yogurt: {
+                title: "🍚 Plain Yogurt (Dahi)",
+                weight: "200g",
+                state: "Plain, cold",
+                cooking: "None required.",
+                shopping: "1.5 kg"
+            }
+        };
+
+        const modal = document.getElementById("myModal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalWeight = document.getElementById("modal-weight");
+        const modalState = document.getElementById("modal-state");
+        const modalCooking = document.getElementById("modal-cooking");
+        const modalShopping = document.getElementById("modal-shopping");
+
+        function showModal(item) {
+            const data = details[item];
+            modalTitle.innerHTML = data.title;
+            modalWeight.innerHTML = data.weight;
+            modalState.innerHTML = data.state;
+            modalCooking.innerHTML = data.cooking;
+            modalShopping.innerHTML = data.shopping;
+            modal.style.display = "flex"; // Use flex to center vertically
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        // Close modal if user clicks outside of the content area
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+        
+        // Close modal with the 'Escape' key for better desktop experience
+        window.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+
+</body>
+</html>
