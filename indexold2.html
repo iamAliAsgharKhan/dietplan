@@ -17,7 +17,7 @@
             --accent-color-1: #3498db; /* Breakfast */
             --accent-color-2: #f39c12; /* Lunch */
             --accent-color-3: #8e44ad; /* Dinner */
-            --accent-color-4: #27ae60; /* Extras & Snacks */
+            --accent-color-4: #27ae60; /* Reminders */
             --shadow-color: rgba(60, 64, 67, 0.15);
             --border-color: #e8eef2;
         }
@@ -185,14 +185,10 @@
         }
         
         .modal p strong {
-            display: block; /* Make label appear on its own line */
+            display: inline-block;
+            width: 100px;
             color: var(--heading-color);
             font-weight: 600;
-            margin-bottom: 4px;
-        }
-        
-        .modal-body {
-            color: var(--text-color);
         }
 
         .footer {
@@ -232,7 +228,7 @@
                 <h2 class="breakfast">🍳 Breakfast (8-9 AM)</h2>
                 <div class="button-container">
                     <button class="ingredient-button" onclick="showModal('eggs')">Eggs</button>
-                    <button class="ingredient-button" onclick="showModal('dalia')">Dalia</button>
+                    <button class="ingredient-button" onclick="showModal('daliaBreakfast')">Dalia</button>
                     <button class="ingredient-button" onclick="showModal('nuts')">Nuts</button>
                 </div>
             </div>
@@ -241,8 +237,8 @@
             <div class="meal-card">
                 <h2 class="lunch">☀️ Lunch (1-2 PM)</h2>
                 <div class="button-container">
-                    <button class="ingredient-button" onclick="showModal('chicken')">Chicken Breast</button>
-                    <button class="ingredient-button" onclick="showModal('chickpeas')">Chickpeas/Rice</button>
+                    <button class="ingredient-button" onclick="showModal('chicken')">Chicken</button>
+                    <button class="ingredient-button" onclick="showModal('chickpeas')">Chickpeas</button>
                     <button class="ingredient-button" onclick="showModal('salad')">Salad</button>
                 </div>
             </div>
@@ -252,26 +248,17 @@
                 <h2 class="dinner">🌙 Dinner (7-8 PM)</h2>
                 <div class="button-container">
                     <button class="ingredient-button" onclick="showModal('lentils')">Lentils (Daal)</button>
-                    <button class="ingredient-button" onclick="showModal('dalia')">Dalia</button>
+                    <button class="ingredient-button" onclick="showModal('daliaDinner')">Dalia</button>
                     <button class="ingredient-button" onclick="showModal('yogurt')">Yogurt</button>
                 </div>
             </div>
             
-            <!-- Optional Snacks -->
-            <div class="meal-card">
-                <h2 class="extras">☕ Optional Snacks</h2>
-                <div class="button-container">
-                    <button class="ingredient-button" onclick="showModal('fruit')">Fruit</button>
-                    <button class="ingredient-button" onclick="showModal('greenTea')">Green Tea</button>
-                </div>
-            </div>
-
-            <!-- Reminders Card -->
+            <!-- Extras -->
             <div class="meal-card full-width">
                 <h2 class="extras">⭐ Important Reminders</h2>
                 <p>💧 Drink 8-10 glasses of water daily.</p>
-                <p>🥄 Use minimal oil (max 1 tbsp/day). Pan-sear instead of deep-frying.</p>
-                <p>💪 Consistency is your real superpower. Stick to the plan!</p>
+                <p>🥄 Use minimal oil (max 1 tbsp/day). A healthy tarka is your friend!</p>
+                <p>💪 Consistency is your real superpower!</p>
             </div>
         </div>
 
@@ -285,10 +272,10 @@
         <div class="modal-content">
             <span class="close-button" onclick="closeModal()">&times;</span>
             <h3 id="modal-title">Ingredient Details</h3>
-            <p><strong>Quantity Per Meal:</strong> <span id="modal-weight" class="modal-body"></span></p>
-            <p><strong>State:</strong> <span id="modal-state" class="modal-body"></span></p>
-            <p><strong>Cooking Instructions:</strong> <span id="modal-cooking" class="modal-body"></span></p>
-            <p><strong>Weekly Shopping:</strong> <span id="modal-shopping" class="modal-body"></span></p>
+            <p><strong>Weight:</strong> <span id="modal-weight"></span></p>
+            <p><strong>State:</strong> <span id="modal-state"></span></p>
+            <p><strong>Cooking:</strong> <span id="modal-cooking"></span></p>
+            <p><strong>Buy Weekly:</strong> <span id="modal-shopping"></span></p>
         </div>
     </div>
 
@@ -298,71 +285,64 @@
                 title: "🍳 Eggs",
                 weight: "150g (approx. 3 large eggs)",
                 state: "Boiled or Scrambled",
-                cooking: "<b>Boiled (Batch Cook):</b> Place eggs in a pot with cold water. Bring to a boil, then turn off heat, cover, and let sit for 12 mins. Store in fridge. <br><b>Scrambled:</b> Whisk and cook on a non-stick pan.",
+                cooking: "<b>Boiled:</b> Place in water, boil for 8-10 mins. <br><b>Scrambled:</b> Whisk and cook on a non-stick pan with minimal oil.",
                 shopping: "2 dozen"
             },
-            dalia: {
-                title: "🥣 Dalia (Cracked Wheat)",
+            daliaBreakfast: {
+                title: "🥣 Dalia (Breakfast)",
                 weight: "80g (dry weight)",
-                state: "Cooked into a savory porridge",
-                cooking: "<b>(5-Min Cook):</b> Combine ½ cup Dalia with 1.5 cups water & a pinch of salt. Boil, then simmer on low for 5-7 mins until soft.",
-                shopping: "Buy a ~1.2 kg pack for the week"
+                state: "Cooked into a porridge",
+                cooking: "Combine 1 part Dalia with 3 parts water & a pinch of salt. Boil, then simmer for 5-7 mins until soft.",
+                shopping: "Buy a 1.2 kg pack for the week."
             },
             nuts: {
                 title: "🥜 Nuts (Almonds/Walnuts)",
-                weight: "30g (a handful)",
+                weight: "30g",
                 state: "Raw",
-                cooking: "None. Perfect for focus and healthy fats.",
+                cooking: "None required. Eat as they are.",
                 shopping: "~250g pack"
             },
             chicken: {
                 title: "🍗 Chicken Breast",
                 weight: "150g (raw weight)",
-                state: "Pan-Seared (No Oven Needed)",
-                cooking: "<b>(Batch Cook):</b> Marinate chicken pieces with spices (salt, pepper, garlic paste). Heat 1 tsp oil on a pan (tawa) on medium-high heat. Cook for 5-7 mins per side until no longer pink inside. Store in fridge.",
+                state: "Grilled or Baked",
+                cooking: "Marinate with spices. Grill on a pan or bake at 200°C (400°F) for 20-25 mins until cooked through.",
                 shopping: "1.05 kg"
             },
             chickpeas: {
-                title: "🍲 Chickpeas or Brown Rice",
-                weight: "50g (dry chickpeas) OR 65g (dry brown rice)",
-                state: "Boiled / Steamed",
-                cooking: "<b>Chickpeas (Fastest):</b> Use canned chickpeas. Just rinse well and add to your meal. <br><b>Brown Rice (Batch Cook):</b> Combine 1 part rice with 2 parts water & salt. Boil, then cook on lowest heat (covered) for 25 mins.",
+                title: "🍲 Chickpeas (Chanay)",
+                weight: "50g (dry weight)",
+                state: "Boiled (Tarka optional)",
+                cooking: "Soak overnight. Pressure cook until soft. For a <b>healthy tarka:</b> Heat ½ tsp oil, sizzle cumin seeds & 1 chopped garlic, pour over your single serving.",
                 shopping: "~500g pack"
             },
             salad: {
-                title: "🥗 Simple Raw Salad",
+                title: "🥗 Simple Salad",
                 weight: "~300g total",
-                state: "Raw & Fresh",
-                cooking: "Chop 1 medium cucumber, 1 medium tomato, and ½ an onion. Mix with a squeeze of lemon juice and a pinch of salt.",
-                shopping: "1kg each of Cucumber & Tomato"
+                state: "Raw",
+                cooking: "Chop 1 medium cucumber, 1 medium tomato, and ½ an onion. Mix with a squeeze of lemon.",
+                shopping: "1kg each of Cucumber & Tomato, 0.5kg Onion"
             },
             lentils: {
                 title: "🥣 Lentils (Daal)",
                 weight: "100g (dry weight)",
-                state: "Cooked into a simple soup",
-                cooking: "<b>(Batch Cook):</b> Wash 1 cup daal. Combine with 4 cups water, salt, & turmeric. Boil, then simmer on low for 20-25 mins until soft. Tastes even better the next day!",
+                state: "Cooked into a soup",
+                cooking: "Rinse daal. Combine with water, salt, turmeric, and chili powder. Boil then simmer for 20-25 mins until mushy.",
                 shopping: "700g (buy a 1kg pack)"
+            },
+            daliaDinner: {
+                title: "🥣 Dalia (Dinner)",
+                weight: "80g (dry weight)",
+                state: "Cooked into a porridge",
+                cooking: "Combine 1 part Dalia with 3 parts water & a pinch of salt. Boil, then simmer for 5-7 mins until soft. Pour hot daal over it.",
+                shopping: "Buy a 1.2 kg pack for the week."
             },
             yogurt: {
                 title: "🍚 Plain Yogurt (Dahi)",
                 weight: "200g",
                 state: "Plain, cold",
-                cooking: "None. Excellent for gut health which aids mental clarity.",
+                cooking: "None required.",
                 shopping: "1.5 kg"
-            },
-            fruit: {
-                title: "🍎 Fruit Snack",
-                weight: "1 medium Apple or Banana",
-                state: "Raw",
-                cooking: "None. A great way to handle sugar cravings and get a quick energy boost.",
-                shopping: "7 apples or 1 dozen bananas"
-            },
-            greenTea: {
-                title: "🍵 Green Tea",
-                weight: "1 tea bag",
-                state: "Hot beverage",
-                cooking: "Steep 1 tea bag in hot water for 2-3 minutes. Contains L-theanine, which can improve focus and attention.",
-                shopping: "1 box of tea bags"
             }
         };
 
