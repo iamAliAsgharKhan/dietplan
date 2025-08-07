@@ -18,6 +18,7 @@
             --accent-color-2: #f39c12; /* Lunch */
             --accent-color-3: #8e44ad; /* Dinner */
             --accent-color-4: #27ae60; /* Extras & Snacks */
+            --accent-color-5: #c0392b; /* Budget */
             --shadow-color: rgba(60, 64, 67, 0.15);
             --border-color: #e8eef2;
         }
@@ -37,7 +38,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 1.5rem; /* Use rem for responsive padding */
+            padding: 1.5rem;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -47,7 +48,7 @@
         /* Main container for all content */
         .main-container {
             width: 100%;
-            max-width: 1000px; /* Max width for large desktops */
+            max-width: 1000px;
         }
 
         header {
@@ -58,14 +59,14 @@
         h1 {
             color: var(--heading-color);
             font-weight: 700;
-            font-size: clamp(1.75rem, 5vw, 2.5rem); /* Fluid font size */
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
             margin: 0;
         }
 
         /* Grid layout for the meal cards */
         .meal-grid {
             display: grid;
-            grid-template-columns: 1fr; /* Default to 1 column for mobile */
+            grid-template-columns: 1fr;
             gap: 1.5rem;
         }
 
@@ -91,11 +92,12 @@
             align-items: center;
         }
         
-        /* Color coding for meal types */
         .meal-card h2.breakfast { color: var(--accent-color-1); }
         .meal-card h2.lunch { color: var(--accent-color-2); }
         .meal-card h2.dinner { color: var(--accent-color-3); }
         .meal-card h2.extras { color: var(--accent-color-4); }
+        .meal-card h2.budget { color: var(--accent-color-5); }
+
 
         .button-container {
             display: flex;
@@ -120,6 +122,73 @@
         .ingredient-button:hover {
             transform: scale(1.05);
             background-color: #d6dde2;
+        }
+
+        /* Style for the budget control panel */
+        .budget-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .price-item label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--heading-color);
+        }
+
+        .price-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+            background-color: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .price-input:focus {
+            outline: none;
+            border-color: var(--accent-color-5);
+            box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.2);
+        }
+
+        .total-cost-display {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--border-color);
+            text-align: center;
+        }
+        
+        .daily-total {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .daily-total span {
+            font-size: 1.75em;
+            font-weight: 700;
+            color: var(--accent-color-5);
+        }
+        
+        .cost-breakdown {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+            font-size: 0.95em;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+        }
+        
+        .cost-breakdown strong {
+            font-weight: 700;
+            color: var(--heading-color);
         }
 
         /* Modal (Pop-up) Styles */
@@ -185,7 +254,7 @@
         }
         
         .modal p strong {
-            display: block; /* Make label appear on its own line */
+            display: block;
             color: var(--heading-color);
             font-weight: 600;
             margin-bottom: 4px;
@@ -202,17 +271,10 @@
             color: #7f8c8d;
         }
 
-        /* ----------------------------------- */
-        /* --- RESPONSIVE DESIGN BREAKPOINT --- */
-        /* ----------------------------------- */
-
-        /* For tablets and desktops (screens wider than 768px) */
         @media (min-width: 768px) {
             .meal-grid {
-                grid-template-columns: repeat(2, 1fr); /* Switch to a 2-column grid */
+                grid-template-columns: repeat(2, 1fr);
             }
-            
-            /* Make the reminder card span both columns */
             .meal-card.full-width {
                 grid-column: 1 / -1;
             }
@@ -242,7 +304,7 @@
                 <h2 class="lunch">☀️ Lunch (1-2 PM)</h2>
                 <div class="button-container">
                     <button class="ingredient-button" onclick="showModal('chicken')">Chicken Breast</button>
-                    <button class="ingredient-button" onclick="showModal('chickpeas')">Chickpeas/Rice</button>
+                    <button class="ingredient-button" onclick="showModal('chickpeas')">Spiced Chickpeas</button>
                     <button class="ingredient-button" onclick="showModal('salad')">Salad</button>
                 </div>
             </div>
@@ -266,6 +328,64 @@
                 </div>
             </div>
 
+            <!-- Budget Card -->
+            <div class="meal-card full-width">
+                <h2 class="budget">💰 Budget Control Panel</h2>
+                <p>Enter the daily cost for each item below to see your live total. Set optional items to 0 if not used.</p>
+                <div class="budget-controls">
+                    <div class="price-item">
+                        <label for="cost-egg">🍳 Eggs</label>
+                        <input type="number" id="cost-egg" class="price-input" value="75" oninput="updateTotal()">
+                    </div>
+                    <div class="price-item">
+                        <label for="cost-dalia">🥣 Dalia</label>
+                        <input type="number" id="cost-dalia" class="price-input" value="53.33" oninput="updateTotal()">
+                    </div>
+                    <div class="price-item">
+                        <label for="cost-nuts">🥜 Nuts</label>
+                        <input type="number" id="cost-nuts" class="price-input" value="50" oninput="updateTotal()">
+                    </div>
+                    <div class="price-item">
+                        <label for="cost-chicken">🍗 Chicken</label>
+                        <input type="number" id="cost-chicken" class="price-input" value="125" oninput="updateTotal()">
+                    </div>
+                    <div class="price-item">
+                        <label for="cost-chickpeas">🍲 Chickpeas</label>
+                        <input type="number" id="cost-chickpeas" class="price-input" value="22.5" oninput="updateTotal()">
+                    </div>
+                    <div class="price-item">
+                        <label for="cost-salad">🥗 Salad</label>
+                        <input type="number" id="cost-salad" class="price-input" value="50" oninput="updateTotal()">
+                    </div>
+                    <div class="price-item">
+                        <label for="cost-daal">🥣 Daal</label>
+                        <input type="number" id="cost-daal" class="price-input" value="45" oninput="updateTotal()">
+                    </div>
+                    <div class="price-item">
+                        <label for="cost-yogurt">🍚 Yogurt</label>
+                        <input type="number" id="cost-yogurt" class="price-input" value="60" oninput="updateTotal()">
+                    </div>
+                    <div class="price-item">
+                        <label for="cost-fruit">🍎 Optional Fruit</label>
+                        <input type="number" id="cost-fruit" class="price-input" value="0" oninput="updateTotal()">
+                    </div>
+                    <div class="price-item">
+                        <label for="cost-greenTea">🍵 Optional Green Tea</label>
+                        <input type="number" id="cost-greenTea" class="price-input" value="0" oninput="updateTotal()">
+                    </div>
+                </div>
+                <div class="total-cost-display">
+                    <div class="daily-total">
+                        Total Estimated Daily Cost: <br>
+                        <span id="total-cost">0.00</span> PKR
+                    </div>
+                    <div class="cost-breakdown">
+                        <p>Weekly: <strong id="weekly-cost">0.00</strong> PKR</p>
+                        <p>Monthly: <strong id="monthly-cost">0.00</strong> PKR</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Reminders Card -->
             <div class="meal-card full-width">
                 <h2 class="extras">⭐ Important Reminders</h2>
@@ -276,7 +396,7 @@
         </div>
 
         <footer class="footer">
-            <p>Your personal diet companion.</p>
+            <p>Your personal diet companion. Stay focused.</p>
         </footer>
     </main>
 
@@ -288,7 +408,6 @@
             <p><strong>Quantity Per Meal:</strong> <span id="modal-weight" class="modal-body"></span></p>
             <p><strong>State:</strong> <span id="modal-state" class="modal-body"></span></p>
             <p><strong>Cooking Instructions:</strong> <span id="modal-cooking" class="modal-body"></span></p>
-            <p><strong>Weekly Shopping:</strong> <span id="modal-shopping" class="modal-body"></span></p>
         </div>
     </div>
 
@@ -298,71 +417,61 @@
                 title: "🍳 Eggs",
                 weight: "150g (approx. 3 large eggs)",
                 state: "Boiled or Scrambled",
-                cooking: "<b>Boiled (Batch Cook):</b> Place eggs in a pot with cold water. Bring to a boil, then turn off heat, cover, and let sit for 12 mins. Store in fridge. <br><b>Scrambled:</b> Whisk and cook on a non-stick pan.",
-                shopping: "2 dozen"
+                cooking: "<b>Boiled (Batch Cook):</b> Place eggs in a pot with cold water. Bring to a boil, then turn off heat, cover, and let sit for 12 mins. Store in fridge. <br><b>Scrambled:</b> Whisk and cook on a non-stick pan."
             },
             dalia: {
                 title: "🥣 Dalia (Cracked Wheat)",
-                weight: "80g (dry weight)",
+                weight: "80g (dry weight) per meal",
                 state: "Cooked into a savory porridge",
-                cooking: "<b>(5-Min Cook):</b> Combine ½ cup Dalia with 1.5 cups water & a pinch of salt. Boil, then simmer on low for 5-7 mins until soft.",
-                shopping: "Buy a ~1.2 kg pack for the week"
+                cooking: "<b>(5-Min Cook):</b> Combine ½ cup Dalia with 1.5 cups water & a pinch of salt. Boil, then simmer on low for 5-7 mins until soft."
             },
             nuts: {
                 title: "🥜 Nuts (Almonds/Walnuts)",
                 weight: "30g (a handful)",
                 state: "Raw",
-                cooking: "None. Perfect for focus and healthy fats.",
-                shopping: "~250g pack"
+                cooking: "None. Perfect for focus and healthy fats."
             },
             chicken: {
                 title: "🍗 Chicken Breast",
                 weight: "150g (raw weight)",
                 state: "Pan-Seared (No Oven Needed)",
-                cooking: "<b>(Batch Cook):</b> Marinate chicken pieces with spices (salt, pepper, garlic paste). Heat 1 tsp oil on a pan (tawa) on medium-high heat. Cook for 5-7 mins per side until no longer pink inside. Store in fridge.",
-                shopping: "1.05 kg"
+                cooking: "<b>(Batch Cook):</b> Marinate chicken pieces with spices (salt, pepper, garlic paste). Heat 1 tsp oil on a pan (tawa) on medium-high heat. Cook for 5-7 mins per side until no longer pink inside. Store in fridge."
             },
             chickpeas: {
-                title: "🍲 Chickpeas or Brown Rice",
-                weight: "50g (dry chickpeas) OR 65g (dry brown rice)",
-                state: "Boiled / Steamed",
-                cooking: "<b>Chickpeas (Fastest):</b> Use canned chickpeas. Just rinse well and add to your meal. <br><b>Brown Rice (Batch Cook):</b> Combine 1 part rice with 2 parts water & salt. Boil, then cook on lowest heat (covered) for 25 mins.",
-                shopping: "~500g pack"
+                title: "🍲 Simple Spiced Chickpeas",
+                weight: "50g (dry weight)",
+                state: "Boiled & Spiced",
+                cooking: "<b>(Batch Cook):</b> Soak dry chickpeas overnight. Pressure cook until soft (15-20 mins). Store in fridge. <br><b>To Serve (30 seconds):</b> Take a cup of boiled chickpeas, add a sprinkle of Chaat Masala and a squeeze of lemon. Mix and eat."
             },
             salad: {
                 title: "🥗 Simple Raw Salad",
                 weight: "~300g total",
                 state: "Raw & Fresh",
-                cooking: "Chop 1 medium cucumber, 1 medium tomato, and ½ an onion. Mix with a squeeze of lemon juice and a pinch of salt.",
-                shopping: "1kg each of Cucumber & Tomato"
+                cooking: "Chop 1 medium cucumber, 1 medium tomato, and ½ an onion. Mix with a squeeze of lemon juice and a pinch of salt."
             },
             lentils: {
                 title: "🥣 Lentils (Daal)",
                 weight: "100g (dry weight)",
                 state: "Cooked into a simple soup",
-                cooking: "<b>(Batch Cook):</b> Wash 1 cup daal. Combine with 4 cups water, salt, & turmeric. Boil, then simmer on low for 20-25 mins until soft. Tastes even better the next day!",
-                shopping: "700g (buy a 1kg pack)"
+                cooking: "<b>(Batch Cook):</b> Wash 1 cup daal. Combine with 4 cups water, salt, & turmeric. Boil, then simmer on low for 20-25 mins until soft. Tastes even better the next day!"
             },
             yogurt: {
                 title: "🍚 Plain Yogurt (Dahi)",
                 weight: "200g",
                 state: "Plain, cold",
-                cooking: "None. Excellent for gut health which aids mental clarity.",
-                shopping: "1.5 kg"
+                cooking: "None. Excellent for gut health which aids mental clarity."
             },
             fruit: {
                 title: "🍎 Fruit Snack",
                 weight: "1 medium Apple or Banana",
                 state: "Raw",
-                cooking: "None. A great way to handle sugar cravings and get a quick energy boost.",
-                shopping: "7 apples or 1 dozen bananas"
+                cooking: "None. A great way to handle sugar cravings and get a quick energy boost."
             },
             greenTea: {
                 title: "🍵 Green Tea",
                 weight: "1 tea bag",
                 state: "Hot beverage",
-                cooking: "Steep 1 tea bag in hot water for 2-3 minutes. Contains L-theanine, which can improve focus and attention.",
-                shopping: "1 box of tea bags"
+                cooking: "Steep 1 tea bag in hot water for 2-3 minutes. Contains L-theanine, which can improve focus and attention."
             }
         };
 
@@ -371,7 +480,6 @@
         const modalWeight = document.getElementById("modal-weight");
         const modalState = document.getElementById("modal-state");
         const modalCooking = document.getElementById("modal-cooking");
-        const modalShopping = document.getElementById("modal-shopping");
 
         function showModal(item) {
             const data = details[item];
@@ -379,13 +487,35 @@
             modalWeight.innerHTML = data.weight;
             modalState.innerHTML = data.state;
             modalCooking.innerHTML = data.cooking;
-            modalShopping.innerHTML = data.shopping;
-            modal.style.display = "flex"; // Use flex to center vertically
+            modal.style.display = "flex";
         }
 
         function closeModal() {
             modal.style.display = "none";
         }
+
+        function updateTotal() {
+            const costIds = ['egg', 'dalia', 'nuts', 'chicken', 'chickpeas', 'salad', 'daal', 'yogurt', 'fruit', 'greenTea'];
+            let dailyTotal = 0;
+            costIds.forEach(id => {
+                const value = parseFloat(document.getElementById(`cost-${id}`).value) || 0;
+                dailyTotal += value;
+            });
+
+            // Calculate weekly and monthly costs
+            const weeklyTotal = dailyTotal * 7;
+            const monthlyTotal = dailyTotal * 30; // Using 30 days as a standard month
+
+            // Update the display
+            document.getElementById('total-cost').innerText = dailyTotal.toFixed(2);
+            document.getElementById('weekly-cost').innerText = weeklyTotal.toFixed(2);
+            document.getElementById('monthly-cost').innerText = monthlyTotal.toFixed(2);
+        }
+
+        // Run functions on page load
+        window.onload = () => {
+            updateTotal();
+        };
 
         // Close modal if user clicks outside of the content area
         window.onclick = function(event) {
@@ -394,7 +524,7 @@
             }
         }
         
-        // Close modal with the 'Escape' key for better desktop experience
+        // Close modal with the 'Escape' key
         window.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeModal();
